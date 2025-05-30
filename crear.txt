@@ -1,0 +1,3 @@
+npx nest g module promociones
+npx nest g controller nombre
+npx nest g service nombre
