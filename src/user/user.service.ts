@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { User } from './user.entity';
+import cloudinary from '../cloudinary/cloudinary.config';
+import { Readable } from 'stream';
 
 @Injectable()
 export class UserService {
@@ -40,4 +42,48 @@ LEFT JOIN datos_negocios ON datos_negocios.id_usuario=usuarios.id
     const result = await this.findByCuit(usuario);
     return result!;
   }
+
+  async updateNotification(id: number, enabled: number): Promise<void> {
+    await this.dataSource.query(
+      'UPDATE usuarios SET enabled_notification = ? WHERE id = ?',
+      [enabled, id],
+    );
+  }
+
+  async updateUser(userId: number, body: any) {
+
+    await this.dataSource.query(
+      `UPDATE usuarios SET 
+      nombre = ?,
+      apellido = ?,
+      sexo = ?
+      WHERE id = ?`,
+      [body.nombre, body.apellido, body.sexo, userId],
+    );
+
+    return { message: 'Usuario actualizado' };
+  }
+
+  async updateAvatar(userId: number, file: Express.Multer.File): Promise<{ message: string, url: string }> {
+    return new Promise((resolve, reject) => {
+      const upload = cloudinary.uploader.upload_stream(
+        { folder: 'Avatares' },
+        async (error, result) => {
+          if (error || !result) return reject(error || new Error('Error al subir a Cloudinary'));
+
+          const relativePath = result.secure_url.replace(/^https?:\/\/res\.cloudinary\.com\/[^/]+\//, '');
+
+          await this.dataSource.query(
+            'UPDATE usuarios SET avatar = ? WHERE id = ?',
+            [relativePath, userId],
+          );
+
+          resolve({ message: 'Avatar actualizado', url: result.secure_url });
+        }
+      );
+
+      Readable.from(file.buffer).pipe(upload);
+    });
+  }
+
 }

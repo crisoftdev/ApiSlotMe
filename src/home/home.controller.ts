@@ -12,7 +12,7 @@ export class HomeController {
     @Get()
     getAll(@Req() req: Request) {
         const { userId } = req.user as any;
-        console.log(userId)
+       
         return this.homeService.findAll(userId);
     }
 }

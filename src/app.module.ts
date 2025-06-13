@@ -10,6 +10,12 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { LocalesModule } from './locales/locales.module';
 import { HorariosNegocioModule } from './horariosnegocio/horariosnegocio.module';
 import { MercadoPagoModule } from './mercadopago/mercadopago.module';
+import { TurnosModule } from './turnos/turnos.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import { CategoriasModule } from './categorias/categorias.module';
+import { FavoritosModule } from './favoritos/favoritos.module';
+import { MinegocioModule } from './minegocio/minegocio.module';
+import { PromocionesModule } from './promociones/promociones.module';
 
 
 @Module({
@@ -24,6 +30,7 @@ import { MercadoPagoModule } from './mercadopago/mercadopago.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: false, // cambia a false en producción
+      timezone: 'Z'
     }),
     UserModule,
     AuthModule,
@@ -32,7 +39,13 @@ import { MercadoPagoModule } from './mercadopago/mercadopago.module';
     LocalesModule,
     HorariosNegocioModule,
     MercadoPagoModule,
+    TurnosModule,
+    NotificacionesModule,
+    CategoriasModule,
+    FavoritosModule,
+    MinegocioModule,
+    PromocionesModule,
   ],
   controllers: [HomeController],
 })
-export class AppModule {}
+export class AppModule { }
